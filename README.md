@@ -2,6 +2,29 @@
 
 [cmux](https://github.com/manaflow-ai/cmux) と、cmux の内蔵ターミナルが利用する [Ghostty](https://ghostty.org/) の個人設定一式です。`config/` 以下を `~/.config/` に置くと cmux 関連の設定が有効になります。
 
+## 前提: cmux 本体と CLI (`bin/cmux`) のインストール
+
+- `/Applications/cmux.app` が必要です。[manaflow-ai/cmux](https://github.com/manaflow-ai/cmux) のリリースから dmg を取得するか、利用しているパッケージマネージャ (Homebrew Cask 等) で導入してください。
+- cmux CLI は app バンドル内に同梱されており、`/Applications/cmux.app/Contents/Resources/bin/cmux` に存在します。
+- `scripts/ghostty-opacity.sh` はこの絶対パスを直接呼ぶので、CLI を PATH に通さなくても動作します。
+- ターミナルから素の `cmux` コマンドを使いたい場合だけ、シンボリックリンクで PATH に通します:
+
+```sh
+# Intel Mac / Homebrew (/usr/local) を使っている場合
+sudo ln -sf /Applications/cmux.app/Contents/Resources/bin/cmux /usr/local/bin/cmux
+
+# Apple Silicon の Homebrew prefix を使っている場合
+sudo ln -sf /Applications/cmux.app/Contents/Resources/bin/cmux /opt/homebrew/bin/cmux
+```
+
+または `~/.zshrc` 等で PATH に追加:
+
+```sh
+export PATH="/Applications/cmux.app/Contents/Resources/bin:$PATH"
+```
+
+cmux 本体をアップデートしても app バンドル内のパスは変わらないので、symlink / PATH 設定はそのまま使えます。
+
 ## 構成
 
 ```
