@@ -46,7 +46,12 @@ cmux 内蔵ターミナルの背景不透明度をキーバインドから増減
 
 `~/.config/ghostty/config` の `background-opacity` を書き換えたうえで、`/Applications/cmux.app` の `cmux reload-config` と `cmux refresh-surfaces` を並列で呼び出して即時反映します。範囲は 0.10〜1.00。
 
-`hold` モードは `/tmp/cmux-opacity.hold` をロックファイルとして使い、押下と同時に `cmux reload-config` / `refresh-surfaces` の処理時間ペースで連続変更ループに入ります (sleep ベースのスロットリングや初動ディレイは入れていません)。`release` でロックファイルを消してループを止めます。
+`hold` モードは「ticker と applier を分離する coalescing 設計」になっています:
+
+- **ticker** (`TICK_INTERVAL=0.02s` ごと): `/tmp/cmux-opacity.target` に目標 opacity を書き込むだけ。cmux は呼ばない。
+- **applier**: 最新 target を読み、前回適用値と異なれば config を書き換えて `cmux reload-config` / `refresh-surfaces` を呼び出す。cmux 待ちの間に target がさらに進むので、applier は中間値をスキップして最新値にジャンプする (= coalesce)。
+
+これにより、cmux CLI の処理時間に律速されずに長押しスイープが滑らかに進むようになっています。lockfile は `/tmp/cmux-opacity.hold` で、ticker・applier の PID を記録します。`release` で lockfile を消して両プロセスを kill。
 
 ### Karabiner Elements 設定
 
