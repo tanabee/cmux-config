@@ -1,2 +1,5 @@
-background-opacity = 0.28
+background-opacity = 0.84
 custom-shader = ~/.config/ghostty/passthrough.glsl
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
